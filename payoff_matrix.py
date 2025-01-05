@@ -1,4 +1,4 @@
-__author__ = 'elubin'
+
 import numpy
 import logging
 

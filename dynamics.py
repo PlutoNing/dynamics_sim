@@ -1,4 +1,3 @@
-__author__ = 'elubin'
 from abc import ABCMeta, abstractmethod
 import heapq
 import math
@@ -46,7 +45,6 @@ class DynamicsSimulator(object):
         self.pm = payoff_matrix
         self.stochastic = stochastic
 
-
     @abstractmethod
     def next_generation(self, previous):
         """
@@ -79,6 +77,8 @@ class DynamicsSimulator(object):
                 s[i] = p
 
             assert isinstance(p, np.ndarray)
+            print(p.sum())
+            print(expected)
             assert p.sum() == expected
             assert len(p) == n_strats
 
@@ -112,7 +112,7 @@ class DynamicsSimulator(object):
         # record initial state
         for i, x in enumerate(state):
             strategies[i][0, :] = x
-
+        xrange = range
         for gen in xrange(num_gens - 1):
             state = self.validate_state(self.next_generation(state))
             # record state

@@ -1,4 +1,3 @@
-__author__ = 'elubin'
 from plot import GraphOptions, plot_single_data_set, plot_3d_data_set
 import numpy
 

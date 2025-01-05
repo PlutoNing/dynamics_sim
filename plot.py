@@ -1,5 +1,3 @@
-__author__ = 'elubin'
-
 import matplotlib.pyplot as plt
 import numpy
 from mpl_toolkits.mplot3d import Axes3D
@@ -99,7 +97,7 @@ def plot_data(data, x_label, x_values, y_label, title_i, num_categories, graph_o
             if graph_options[GraphOptions.NO_MARKERS_KEY]:
                 marker = ' '
             else:
-                marker = markers[cat_i / n_cats]
+                marker = markers[int(cat_i / n_cats)]
             plt.plot(x_values, data_i[:, cat_i], c=colors[cat_i % n_cats], lw=2, marker=marker)
 
         labels = [category_labels(i, j) for j in range(n_cats)]

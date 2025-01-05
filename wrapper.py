@@ -1,5 +1,3 @@
-__author__ = 'elubin'
-
 from plot import plot_data_for_players, GraphOptions
 from results import NDimensionalData
 import inspect
@@ -222,7 +220,7 @@ class DependentParameter(object):
         @param func: the function mapping fixed parameters to the value that this dependent paramter should take on
         @type func: lambda
         """
-        assert func.func_closure is None, "In order to support parallelization, the lambda must NOT be a closure. It can only be a function of the parameters to the simulation."
+        assert func.__closure__ is None, "In order to support parallelization, the lambda must NOT be a closure. It can only be a function of the parameters to the simulation."
         self.func = func
 
     def get_val(self, **kwargs):
@@ -236,7 +234,7 @@ class DependentParameter(object):
     # Hack to allow portability of lambdas cross-process.
     # The only requirement is that the function doesn't have a closure, which we check above
     def __getstate__(self):
-        return {'func': marshal.dumps(self.func.func_code)}
+        return {"func": marshal.dumps(self.func.__code__)}
 
     def __setstate__(self, state):
         self.func = types.FunctionType(marshal.loads(state['func']), globals())
@@ -266,7 +264,7 @@ class VariedGame(object):
         self.dynamics_cls = dynamics_cls
         self.dynamics_kwargs = dynamics_kwargs if dynamics_kwargs is not None else {}
 
-    def vary_param(self, kw, (low, high, num_steps), **kwargs):
+    def vary_param(self, kw, param_range, **kwargs):
         """
         A helper function to vary one parameter of the game instance over a range of values, and graph the results
 
@@ -282,11 +280,12 @@ class VariedGame(object):
         @rtype: L{NDimensionalData}
         @return: the data for the parameter variation for all different values.
         """
+        low, high, num_steps = param_range  # Unpack the tuple
         if 'graph' not in kwargs:
             kwargs['graph'] = True
         return self.vary(game_kwargs={kw: (low, high, num_steps)}, **kwargs)
 
-    def vary_2params(self, kw1, (low1, high1, num_steps1), kw2, (low2, high2, num_steps2), **kwargs):
+    def vary_2params(self, kw1, range_tuple1, kw2, range_tuple2 , **kwargs):
         """
         A helper function to vary two parameters of the game instance over an independent range of values, and graph the results.
 
@@ -311,6 +310,8 @@ class VariedGame(object):
         @rtype: L{NDimensionalData}
         @return: the data for the parameter variation for all different values.
         """
+        low1, high1, num_steps1 = range_tuple1
+        low2, high2, num_steps2 = range_tuple2
         if 'graph' not in kwargs:
             kwargs['graph'] = True
         return self.vary(game_kwargs={kw1: (low1, high1, num_steps1), kw2: (low2, high2, num_steps2)}, **kwargs)
@@ -463,11 +464,7 @@ class VariedGame(object):
             sim_wrapper.update_game_kwargs(sim_kwargs[0])
             # don't paralellize the simulate_many requests, we are parallelizing higher up in the call chain
             return sim_wrapper.simulate_many(return_labeled=False, parallelize=False, **kwargs)
-
+        xrange = range
         var_indices = xrange(len(ips[idx]))
-        #dependent_params = [{}, {}]
+        # dependent_params = [{}, {}]
         return par_for(parallelize)(delayed(wrapper_vary_for_kwargs)(self, ips, idx + 1, dependent_params, sim_wrapper, chosen_vals + (i, ), **kwargs) for i in var_indices)
-
-
-
-

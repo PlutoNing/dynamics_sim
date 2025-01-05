@@ -1,6 +1,3 @@
-__author__ = 'elubin'
-
-
 from game import SymmetricNPlayerGame
 
 

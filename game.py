@@ -1,15 +1,13 @@
-__author__ = 'elubin'
-
-from dynamics_sim.payoff_matrix import PayoffMatrix
-from dynamics_sim.util import Obj
+from payoff_matrix import PayoffMatrix
+from util import Obj
 import numpy
 import itertools
 import time
 import tempfile
-import StringIO
+import io
 import os
 import logging
-from dynamics_sim.parallel import par_for, delayed
+from parallel import par_for, delayed
 import multiprocessing
 
 UNCLASSIFIED_EQUILIBRIUM = 'Unclassified'  #: the string used to identify an equilibrium that did not match any of the classification rules
@@ -130,30 +128,29 @@ class Game(object):
                     false_positives.append((state, eq, profitable_deviation))
 
         def print_results(false_negatives, false_positives, kwargs, num_sims):
-            output = StringIO.StringIO()
-            print >>output, 'Parameters: %s' % kwargs
-            print >>output, 'Total states tried: %d' % num_sims
-            print >>output, "# False negatives: %d" % len(false_negatives)
-            print >>output, "# False positives: %d" % len(false_positives)
+            output = io.StringIO()
+            output.write('Parameters: %s\n' % kwargs)
+            output.write('Total states tried: %d\n' % num_sims)
+            output.write("# False negatives: %d\n" % len(false_negatives))
+            output.write("# False positives: %d\n" % len(false_positives))
             if len(false_negatives) > 0:
-                print >>output, "False negatives:"
-
+                output.write("False negatives:\n")
                 for fn in false_negatives:
-                    print >>output, convert_state(fn)
+                    output.write("%s\n" % convert_state(fn))
 
             if len(false_positives) > 0:
-                print >>output, "False positives:"
+                output.write("False positives:\n")
                 for state, eq, p_dev in false_positives:
                     first = 'State: %s, Classification: %s. ' % (convert_state(state), cls.EQUILIBRIA_LABELS[eq])
                     if p_dev[0]:
-                        # mixed strategy deviation
+                    # mixed strategy deviation
                         second = 'Profitable deviation: player %d - strategies (%s:%f, %s:%f) don\'t have same exp payoff' % (p_dev[1], cls.STRATEGY_LABELS[p_dev[1]][p_dev[2][0][0]], p_dev[2][0][1], cls.STRATEGY_LABELS[p_dev[1]][p_dev[2][1][0]], p_dev[2][1][1])
                     else:
-                        # pure strategy deviation
+                    # pure strategy deviation
                         second = 'Profitable deviation: player %d - %s' % (p_dev[1], cls.STRATEGY_LABELS[p_dev[1]][p_dev[2]])
-                    print >>output, first + second
+                        output.write(first + second + '\n')
             fd, name = tempfile.mkstemp(suffix='.txt')
-            os.write(fd, output.getvalue())
+            os.write(fd, output.getvalue().encode())
             os.close(fd)
             return name
 
@@ -240,7 +237,7 @@ class Game(object):
 
 
         output_file = print_results(false_negatives, false_positives, game_kwargs, num_sims)
-        print 'Saved results to file: %s' % output_file
+        print('Saved results to file: %s' % output_file)
         #par_for()(delayed(do_work)() for _ in range(multiprocessing.cpu_count()))
 
 

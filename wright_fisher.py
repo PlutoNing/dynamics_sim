@@ -1,7 +1,15 @@
-__author__ = 'eblubin@mit.edu'
 import numpy as np
 from dynamics import StochasticDynamicsSimulator
+""" Wright-Fisher 过程 是一种描述 基因漂变（genetic drift）和种群变化的模型，最早由 Sewall Wright 
+和 Ronald Fisher 提出。它通常用于模拟在有限种群中，个体策略或基因在多代之间如何变化，且不考虑自然选择的作用。
 
+Wright-Fisher 过程的基本特点：
+固定种群大小：种群大小是常数，每一代都有相同数量的个体。
+随机重组：在每一代中，每个个体都有可能从上一代的个体中随机选择一个副本进行繁殖。这意味着某些个体可能会消失，
+某些个体会被多次复制。
+基因漂变：在有限种群中，随机过程会导致某些基因或策略的消失或固定（即某个基因型完全占据整个种群）。
+在进化博弈中，Wright-Fisher 过程通常用于模拟策略如何随机演化，特别是当选择压力较弱时，基因漂变和随机过程的
+作用更加显著。 """
 
 class WrightFisher(StochasticDynamicsSimulator):
     def __init__(self, mu=0.05, *args, **kwargs):
@@ -40,13 +48,3 @@ class WrightFisher(StochasticDynamicsSimulator):
             state.append(new_player_state)
 
         return state
-
-
-
-
-
-
-
-
-
-

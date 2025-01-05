@@ -12,18 +12,21 @@ $ pip install -r requirements.txt
 
 ####Usage
 
-The easiest way to get started with DyPy is to subclass the ```Game``` class and define the game that of interest to be simulated by defining its payoff matrix appropriately as a function of various parameters. You can also define a function that classifies equlibria as a function of the distribution of players playing each strategy.
+开始使用 DyPy 的最简单方法是将类子类化，并通过将其收益矩阵适当地定义为各种参数的函数来定义要模拟的感兴趣游戏。您还可以定义一个函数，将 equlibria 分类为玩每种策略的玩家分布的函数。
 
-Once the game class is defined, choose a dynamics process and execute the desired simulation. Some options are:
+定义游戏类后，选择一个动态过程并执行所需的模拟。一些选项包括:
 
-- Simulate a given number of generations of one simulation, and graph the dynamics of each player's strategies over time
-- Repeat a given simulation multiple times and return the frequency of each resulting equilibria.
-- Vary one or more parameters to the dynamics or game constructors and graph the effect of this variation on the resulting equilibria, either in 2D or 2D graphs.
+- 模拟一个模拟的给定世代数，并绘制每个玩家策略随时间变化的动态图
+- 多次重复给定的模拟，并返回每个结果均衡的频率。.
+- 将一个或多个参数更改为 dynamics 或 game 构造函数，并在 2D 或 2D 图形中绘制此变化对结果均衡的影响.
 
 The ```GameDynamicsWrapper``` and ```VariedGame``` classes take care of simplifying the simulation and graphing processes, and automatically parallelize the computations across all available cores.
+GameDynamicsWrapper和VariedGame类负责简化仿真和绘图过程，并自动在所有可用内核之间并行计算。
 
 To see an example, take a look at the [*Cooperate Without Looking*](https://github.com/ecbtln/cwol_sim/blob/master/cwol.py) subclass along with its associated [simulations](https://github.com/ecbtln/cwol_sim/blob/master/test.py).
+要查看示例，请查看 Collaborate Without Looking 子类及其关联的模拟。
 
 ####Persistence (coming soon)
 
 DyPy decouples the process of simulating with graphing. This encourages users to run long-running simulations and gather tons of data, and then insert and tweak the graph parameters afterwards.
+DyPy 将仿真过程与绘图解耦。这鼓励用户运行长时间运行的模拟并收集大量数据，然后在之后插入和调整图形参数。
